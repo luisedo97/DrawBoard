@@ -1,0 +1,16 @@
+{
+    "name": "whiteboard",
+    "version": "1.0.0",
+    "description": "node whiteboard",
+    "main": "index.js",
+    "keywords": [],
+    "dependencies": {
+        "express": "4.9.x",
+        "socket.io": "latest"
+    },
+    "scripts": {
+        "start": "node index"
+    },
+    "author": "Luis Acurero, Luis Araujo",
+    "license": "ISC"
+}
