@@ -9,8 +9,12 @@
         "socket.io": "latest"
     },
     "scripts": {
-        "start": "node index"
+        "start": "node index.js",
+        "dev": "nodemon index.js"
     },
     "author": "Luis Acurero, Luis Araujo",
-    "license": "ISC"
+    "license": "ISC",
+    "devDependencies": {
+        "nodemon": "^1.18.6"
+    }
 }

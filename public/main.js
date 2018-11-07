@@ -1,7 +1,5 @@
-'use strict';
-
 (function() {
-
+//gotta work that chat logic. Also gotta fix frontend. ALSO me quiero morir.
   var socket = io();
   var canvas = document.getElementsByClassName('whiteboard')[0];
   var colors = document.getElementsByClassName('color');
