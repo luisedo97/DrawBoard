@@ -14,18 +14,10 @@ const server = app.listen(app.get('port'), () =>
 
 const io = SocketIO.listen(server);
 
-function chatActions(socket){
-	socket.on('chat message', (data) => {
-        io.sockets.emit('chat message', data)
-    });
-    socket.on('chat typing', (data) => {
-        socket.broadcast.emit('chat typing', data);
-    });
-}
-
-function onConnection(socket){
-  socket.on('drawing', (data) => socket.broadcast.emit('drawing', data));
-  	//chatActions(socket); hay que implementarrrrr
+function onConnection(socket) {
+    socket.on('drawing', (data) => socket.broadcast.emit('drawing', data));
+    socket.on('chat message', (data) => { io.sockets.emit('chat message', data) });
+    socket.on('chat typing', (data) => { socket.broadcast.emit('chat typing', data) });
 }
 
 io.on('connection', onConnection);

@@ -1,20 +1,24 @@
 {
-    "name": "whiteboard",
-    "version": "1.0.0",
-    "description": "node whiteboard",
-    "main": "index.js",
-    "keywords": [],
-    "dependencies": {
-        "express": "4.9.x",
-        "socket.io": "latest"
-    },
-    "scripts": {
-        "start": "node index.js",
-        "dev": "nodemon index.js"
-    },
-    "author": "Luis Acurero, Luis Araujo",
-    "license": "ISC",
-    "devDependencies": {
-        "nodemon": "^1.18.6"
-    }
+  "name": "drawboard",
+  "version": "1.0.0",
+  "description": "socketio drawboard - subject #web2",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/13luismb/DrawBoard.git"
+  },
+  "author": "Luis Acurero, Luis Araujo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/13luismb/DrawBoard/issues"
+  },
+  "homepage": "https://github.com/13luismb/DrawBoard#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "socket.io": "^2.1.1"
+  }
 }

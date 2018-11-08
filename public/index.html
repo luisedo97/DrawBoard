@@ -1,23 +1,36 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Socket.IO whiteboard</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Socket.IO whiteboard</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+    <div><canvas class="whiteboard"></canvas></div>
 
-  <canvas class="whiteboard" ></canvas>
 
-  <div class="colors">
-    <div class="color black"></div>
-    <div class="color red"></div>
-    <div class="color green"></div>
-    <div class="color blue"></div>
-    <div class="color yellow"></div>
-  </div>
+    <div class="colors">
+        <div class="color black"></div>
+        <div class="color red"></div>
+        <div class="color green"></div>
+        <div class="color blue"></div>
+        <div class="color yellow"></div>
+    </div>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/main.js"></script>
+    <div id="chat-container">
+        <div id="chat-window">
+            <div id="output"></div>
+            <div id="actions"></div>
+        </div>
+        <input type="text" id="username" placeholder="username">
+        <input type="text" id="message" placeholder="message">
+        <button id="send">Send</button>
+
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/main.js"></script>
 </body>
+
 </html>
