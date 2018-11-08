@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <div><canvas class="whiteboard"></canvas></div>
+    
 
 
     <div class="colors">
@@ -19,15 +19,26 @@
         <div class="color yellow"></div>
     </div>
 
+    <div>
+        <canvas class="whiteboard"></canvas>
+    </div>
+
     <div id="chat-container">
         <div id="chat-window">
             <div id="output"></div>
             <div id="actions"></div>
-        </div>
+    </div>
+    <div id="name-container">
         <input type="text" id="username" placeholder="username">
-        <input type="text" id="message" placeholder="message">
+        <button id="enter">Enter</button>  
+    </div>
+    <div id="message-container" hidden>
+        <input type="text" id="message" placeholder="message"> 
         <button id="send">Send</button>
+    </div>
+            <div id="listUser">
 
+    </div>
 
         <script src="/socket.io/socket.io.js"></script>
         <script src="/main.js"></script>

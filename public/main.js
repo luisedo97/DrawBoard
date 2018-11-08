@@ -84,12 +84,17 @@ const draw = function() {
     onResize();
 }
 
+var user;
+var listUsername = [];
+
 const message = function() {
     let message = $('message'),
         username = $('username'),
-        btn = $('send'),
+        btnEnter = $('enter'),
+        btnSend = $('send'),
         output = $('output'),
-        actions = $('actions');
+        actions = $('actions'),
+        listUser = $('listUser');
 
 
     function sentMessage() {
@@ -122,11 +127,30 @@ const message = function() {
         actions.innerHTML = p.innerHTML;
     }
 
+    function setUsername(){
+        user = username.value;
+        socket.emit('register user',user);
+        $('message-container').hidden = false;
+        $('name-container').hidden = true;
+    }
 
-    btn.addEventListener('click', sentMessage, false);
+    function getListUser(data){
+        listUsername = data;
+        listUser.innerHTML = listUsername;
+        console.log(listUsername);
+    }
+
+    btnEnter.addEventListener('click',setUsername,false);
+    btnSend.addEventListener('click', sentMessage, false);
     message.addEventListener('keypress', sentTyping, false);
     socket.on('chat message', getMessage);
     socket.on('chat typing', getTyping);
+    socket.on('new user',getListUser);
+}
+
+window.onunload = ()=>{
+    if(user!=null)
+        socket.emit('disconnected',user);
 }
 
 message();
