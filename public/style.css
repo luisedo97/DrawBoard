@@ -1,8 +1,9 @@
 
-/**
- * Fix user-agent
- */
 
+#canvas {
+  height: 400px;
+  width: 400px;
+  position: relative;
 * {
   box-sizing: border-box;
 }
@@ -27,13 +28,14 @@ html, body {
 }
 
 .colors {
-  position: fixed;
+  position: relative;
 }
 
 .color {
   display: inline-block;
   height: 48px;
   width: 48px;
+  border-radius: 100px;
 }
 
 .color.black { background-color: black; }

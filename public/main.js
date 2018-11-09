@@ -9,38 +9,39 @@ function c(clase) {
 }
 
 const draw = function() {
-    let canvas = c('whiteboard')[0],
+    let canvas = $('canvas'),
         colors = c('color'),
-        context = canvas.getContext('2d'),
+        ctx = canvas.getContext('2d'),
         drawing = false,
         current = { color: 'black' };
+        canvas.width=400;
+        canvas.height=400;
 
     for (var i = 0; i < colors.length; i++) {
         colors[i].addEventListener('click', colorUpdate, false);
     }
 
-    function drawLine(x0, y0, x1, y1, color, emit) {
-        context.beginPath();
-        context.moveTo(x0, y0);
-        context.lineTo(x1, y1);
-        context.strokeStyle = color;
-        context.lineWidth = 2;
-        context.stroke();
-        context.closePath();
+    function drawLine(x0, y0, x1, y1, color) {
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        ctx.lineTo(x1, y1);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.closePath();
+    }
 
-        if (!emit) { return; }
-        var w = canvas.width;
-        var h = canvas.height;
 
-        socket.emit('drawing', {
-            x0: x0 / w,
-            y0: y0 / h,
-            x1: x1 / w,
-            y1: y1 / h,
+    function sendDrawing(x0,y0,x1,y1,color){
+    	socket.emit('drawing', {
+            x0: x0,
+            y0: y0,
+            x1: x1,
+            y1: y1,
             color: color
         });
     }
-
+    
     function isPressed(e) {
         drawing = true;
         current.x = e.clientX;
@@ -50,12 +51,14 @@ const draw = function() {
     function isOut(e) {
         if (!drawing) { return; }
         drawing = false;
-        drawLine(current.x, current.y, e.clientX, e.clientY, current.color, true);
+        drawLine(current.x, current.y, e.clientX, e.clientY, current.color);
+        sendDrawing(current.x, current.y, e.clientX, e.clientY, current.color);
     }
 
     function isMoving(e) {
         if (!drawing) { return; }
-        drawLine(current.x, current.y, e.clientX, e.clientY, current.color, true);
+        drawLine(current.x, current.y, e.clientX, e.clientY, current.color);
+        sendDrawing(current.x, current.y, e.clientX, e.clientY, current.color);
         current.x = e.clientX;
         current.y = e.clientY;
     }
@@ -65,23 +68,15 @@ const draw = function() {
     }
 
     function Drawing(data) {
-        var w = canvas.width;
-        var h = canvas.height;
-        drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color);
-    }
-
-    function onResize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        drawLine(data.x0, data.y0, data.x1, data.y1, data.color);
     }
 
     canvas.addEventListener('mousedown', isPressed, false);
     canvas.addEventListener('mouseup', isOut, false);
     canvas.addEventListener('mouseout', isOut, false);
     canvas.addEventListener('mousemove', isMoving, false);
-    window.addEventListener('resize', onResize, false);
     socket.on('drawing', Drawing);
-    onResize();
+
 }
 
 var user;
