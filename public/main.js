@@ -42,7 +42,7 @@ const draw = function() {
             size: size
         });
     }
-
+    
     function isPressed(e) {
         stop = false;
         x = e.clientX;
