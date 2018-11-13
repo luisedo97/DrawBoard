@@ -5,40 +5,60 @@
     <meta charset="UTF-8">
     <title>Socket.IO whiteboard</title>
     <link rel="stylesheet" href="style.css">
+    <link type="text/css" rel="stylesheet" href="materialize.min.css"  media="screen,projection"/>
 </head>
 
 <body>
+    <script type="text/javascript" src="materialize.min.js"></script>
+
+    <div id="intro" class="black" style="position: absolute;z-index: 2;width: 100%;height: 100%;">
+        <div id="name-container" class="center" style="position: relative;top:35%;">
+            <h3 class="white-text">Enter your username:</h3>
+            <input type="text" id="username" style="width: 30%;text-align:center;" class="white-text black">
+            <br><br>
+            <a class="waves-effect waves-light btn-large white black-text" id="enter">Enter</a>
+        </div>
+        <h7 style="bottom: 5px;text-align: center;position: absolute;width: 100%" class="white-text">DrawBoard - Create by luisedo97 and 13luismb</h7>        
+    </div>
+
+    <div id="all" style="position:absolute;z-index: 1;height: 100%;width: 100%" hidden>
+        
+        
     
+        <div >
+            <canvas class="whiteboard black" id="canvas"></canvas>
+        </div>
+        
+            <div id="chat-window" class="white" style="overflow: scroll;position: absolute;bottom:70px;z-index:2;height:25%;width: 30vh;right: 10px;">
+                    <div id="output"></div>
+                    <div id="actions"></div>
+            </div>
+            <div id="message-container" class="white" style="position: absolute;bottom:10px;z-index:2;height:10%;width: 30vh;right: 10px;">
+                <input type="text" id="message" placeholder="Message"> 
+            </div>
+
+        <div class="white black-text" id="listUser" style="overflow: scroll;position:absolute;height: 30%;width: 30vh;bottom: 10px;left: 10px;z-index: 2;">
+            List User:
+        </div>
+        
+
+        <div class="row colors black z-depth-3">
+            <div class="col s1 color white"></div>
+            <div class="col s1 color red"></div>
+            <div class="col s1 color blue"></div>
+            <div class="col s1 color yellow"></div>
+            <div class="col s1 color pink"></div>
+            <h3 class="col s2 white-text center">DrawBoard</h3>
+            <div class="col s1 color purple"></div>
+            <div class="col s1 color grey"></div>
+            <div class="col s1 color orange"></div>
+            <div class="col s1 color cyan"></div>
+            <div class="col s1 color lime"></div>
+        </div>
 
 
-    <div class="colors">
-        <div class="color black"></div>
-        <div class="color red"></div>
-        <div class="color green"></div>
-        <div class="color blue"></div>
-        <div class="color yellow"></div>
     </div>
-
-    <div>
-        <canvas class="whiteboard"></canvas>
-    </div>
-
-    <div id="chat-container">
-        <div id="chat-window">
-            <div id="output"></div>
-            <div id="actions"></div>
-    </div>
-    <div id="name-container">
-        <input type="text" id="username" placeholder="username">
-        <button id="enter">Enter</button>  
-    </div>
-    <div id="message-container" hidden>
-        <input type="text" id="message" placeholder="message"> 
-        <button id="send">Send</button>
-    </div>
-            <div id="listUser">
-
-    </div>
+    
 
         <script src="/socket.io/socket.io.js"></script>
         <script src="/main.js"></script>

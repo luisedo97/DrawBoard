@@ -9,103 +9,112 @@ function c(clase) {
 }
 
 const draw = function() {
-    let canvas = c('whiteboard')[0],
+    let canvas = $('canvas'),
         colors = c('color'),
-        context = canvas.getContext('2d'),
-        drawing = false,
-        current = { color: 'black' };
+        ctx = canvas.getContext('2d'),
+        stop = true,
+        size = 3,
+        color,x,y;
 
     for (var i = 0; i < colors.length; i++) {
         colors[i].addEventListener('click', colorUpdate, false);
     }
 
-    function drawLine(x0, y0, x1, y1, color, emit) {
-        context.beginPath();
-        context.moveTo(x0, y0);
-        context.lineTo(x1, y1);
-        context.strokeStyle = color;
-        context.lineWidth = 2;
-        context.stroke();
-        context.closePath();
+    function draw(firstX, firstY, nextX, nextY, color, size) {
+        ctx.beginPath();
+        ctx.moveTo(firstX, firstY);
+        ctx.lineTo(nextX, nextY);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = size;
+        ctx.stroke();
+        ctx.closePath();
+        ctx.shadowBlur = 2000000;
+        ctx.shadowColor = color;
+    }
 
-        if (!emit) { return; }
-        var w = canvas.width;
-        var h = canvas.height;
-
+    function sendDrawing(firstX, firstY, nextX, nextY, color, size){
         socket.emit('drawing', {
-            x0: x0 / w,
-            y0: y0 / h,
-            x1: x1 / w,
-            y1: y1 / h,
-            color: color
+            x0: firstX,
+            y0: firstY,
+            x1: nextX,
+            y1: nextY,
+            color: color,
+            size: size
         });
     }
 
     function isPressed(e) {
-        drawing = true;
-        current.x = e.clientX;
-        current.y = e.clientY;
+        stop = false;
+        x = e.clientX;
+        y = e.clientY;
     }
 
     function isOut(e) {
-        if (!drawing) { return; }
-        drawing = false;
-        drawLine(current.x, current.y, e.clientX, e.clientY, current.color, true);
+        if (stop) { return; }
+        stop = true;
+        draw(x, y, e.clientX, e.clientY, color, size);
+        sendDrawing(x, y, e.clientX, e.clientY, color, size);
     }
 
     function isMoving(e) {
-        if (!drawing) { return; }
-        drawLine(current.x, current.y, e.clientX, e.clientY, current.color, true);
-        current.x = e.clientX;
-        current.y = e.clientY;
+        if (stop) { return; }
+        draw(x, y, e.clientX, e.clientY, color,size);
+        sendDrawing(x, y, e.clientX, e.clientY, color,size);
+        x = e.clientX;
+        y = e.clientY;
     }
 
     function colorUpdate(e) {
-        current.color = e.target.className.split(' ')[1]; //cambiar. Hace falta el front.
+        color = e.target.className.split(' ')[3]; //cambiar.
     }
 
-    function Drawing(data) {
-        var w = canvas.width;
-        var h = canvas.height;
-        drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color);
+    function sizeUpdate(e){
+        size = e.target.id;
     }
 
-    function onResize() {
+    function getDrawing(data) {
+        draw(data.x0, data.y0, data.x1, data.y1, data.color, data.size);
+    }
+
+    function Resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
 
-    canvas.addEventListener('mousedown', isPressed, false);
-    canvas.addEventListener('mouseup', isOut, false);
-    canvas.addEventListener('mouseout', isOut, false);
-    canvas.addEventListener('mousemove', isMoving, false);
-    window.addEventListener('resize', onResize, false);
-    socket.on('drawing', Drawing);
-    onResize();
+    canvas.addEventListener('mousedown', isPressed);
+    canvas.addEventListener('mouseup', isOut);
+    canvas.addEventListener('mouseout', isOut);
+    canvas.addEventListener('mousemove', isMoving);
+    socket.on('drawing', getDrawing);
+    Resize();
 }
 
-var user;
-var listUsername = [];
+let user;
+let listUsername = [];
 
 const message = function() {
     let message = $('message'),
         username = $('username'),
         btnEnter = $('enter'),
-        btnSend = $('send'),
         output = $('output'),
         actions = $('actions'),
         listUser = $('listUser');
-
+        chatWindows = $('chat-window');
 
     function sentMessage() {
         socket.emit('chat message', {
             message: message.value,
             username: username.value
         });
+        message.value="";
+        chatWindows.scrollTop = chatWindows.scrollHeight;
     }
 
-    function sentTyping() {
+    function sentTyping(event) {
         socket.emit('chat typing', username.value);
+        if (event.keyCode === 13){
+            sentMessage();
+        }
     }
 
     function getMessage(data) {
@@ -116,6 +125,7 @@ const message = function() {
         p.appendChild(strong);
         p.innerHTML += ": " + data.message;
         output.appendChild(p);
+        chatWindows.scrollTop = chatWindows.scrollHeight;
     }
 
     function getTyping(data) {
@@ -130,18 +140,20 @@ const message = function() {
     function setUsername(){
         user = username.value;
         socket.emit('register user',user);
-        $('message-container').hidden = false;
-        $('name-container').hidden = true;
+        $('intro').hidden = true;
+        $('all').hidden = false;
     }
 
     function getListUser(data){
         listUsername = data;
-        listUser.innerHTML = listUsername;
-        console.log(listUsername);
+        listUser.innerText = "List of connected users:";
+        listUsername.forEach(element => {
+            listUser.innerText += "\n-"+element.username;
+        });
     }
 
     btnEnter.addEventListener('click',setUsername,false);
-    btnSend.addEventListener('click', sentMessage, false);
+    //btnSend.addEventListener('click', sentMessage, false);
     message.addEventListener('keypress', sentTyping, false);
     socket.on('chat message', getMessage);
     socket.on('chat typing', getTyping);
@@ -150,7 +162,7 @@ const message = function() {
 
 window.onunload = ()=>{
     if(user!=null)
-        socket.emit('disconnected',user);
+        socket.emit('disconnected');
 }
 
 message();
