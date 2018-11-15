@@ -14,10 +14,31 @@ const draw = function() {
         ctx = canvas.getContext('2d'),
         stop = true,
         size = 3,
-        color,x,y;
+        sizeAux = size,
+        sizes = c('size'),
+        divCanvas = $('div-canvas'),
+        color = "black",
+        eraser = $('eraser'),
+        blur = 2000000,
+        blurAux = blur,
+        x,y;
 
     for (var i = 0; i < colors.length; i++) {
         colors[i].addEventListener('click', colorUpdate, false);
+    }
+
+    
+    for (var i = 0; i < sizes.length; i++) {
+        sizes[i].addEventListener('click', sizeUpdate, false);
+    }
+
+    eraser.addEventListener('click',activeEraser,false);
+
+    function activeEraser(e){
+        size = e.target.className.split(' ')[2];
+        color = e.target.className.split(' ')[1];
+        blur = 0;
+        socket.emit('change color',color);
     }
 
     function draw(firstX, firstY, nextX, nextY, color, size) {
@@ -28,16 +49,17 @@ const draw = function() {
         ctx.lineWidth = size;
         ctx.stroke();
         ctx.closePath();
-        ctx.shadowBlur = 2000000;
+        ctx.shadowBlur = blur;
         ctx.shadowColor = color;
+        //console.log(nextX+"-"+nextY);
     }
 
     function sendDrawing(firstX, firstY, nextX, nextY, color, size){
         socket.emit('drawing', {
-            x0: firstX,
-            y0: firstY,
-            x1: nextX,
-            y1: nextY,
+            x0: firstX/canvas.width,
+            y0: firstY/canvas.height,
+            x1: nextX/canvas.width,
+            y1: nextY/canvas.height,
             color: color,
             size: size
         });
@@ -65,15 +87,17 @@ const draw = function() {
     }
 
     function colorUpdate(e) {
-        color = e.target.className.split(' ')[3]; //cambiar.
+        color = e.target.className.split(' ')[1];
+        size = sizeAux;
+        blur = blurAux;
+        socket.emit('change color',color);
+        console.log(color);
     }
 
     function sizeUpdate(e){
-        size = e.target.id;
-    }
-
-    function getDrawing(data) {
-        draw(data.x0, data.y0, data.x1, data.y1, data.color, data.size);
+        size = e.target.className.split(' ')[2];
+        sizeAux = size;
+        console.log(size);
     }
 
     function Resize() {
@@ -81,12 +105,26 @@ const draw = function() {
         canvas.height = window.innerHeight;
     }
 
+    function getDrawing(data) {
+        var h = canvas.height;
+        var w = canvas.width;
+        draw(data.x0*w, data.y0*h, data.x1*w, data.y1*h, data.color, data.size);
+    }
+
+    function clearCanvas(){
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+
     canvas.addEventListener('mousedown', isPressed);
     canvas.addEventListener('mouseup', isOut);
     canvas.addEventListener('mouseout', isOut);
     canvas.addEventListener('mousemove', isMoving);
+    //window.addEventListener('resize', Resize);
     socket.on('drawing', getDrawing);
+    //socket.on('timeClear',clearCanvas);
     Resize();
+    console.log(canvas.width+"-"+canvas.height);
 }
 
 let user;
@@ -104,14 +142,14 @@ const message = function() {
     function sentMessage() {
         socket.emit('chat message', {
             message: message.value,
-            username: username.value
+            username: user
         });
         message.value="";
         chatWindows.scrollTop = chatWindows.scrollHeight;
     }
 
     function sentTyping(event) {
-        socket.emit('chat typing', username.value);
+        socket.emit('chat typing', user);
         if (event.keyCode === 13){
             sentMessage();
         }
@@ -146,10 +184,14 @@ const message = function() {
 
     function getListUser(data){
         listUsername = data;
-        listUser.innerText = "List of connected users:";
+        listUser.innerText = "";
         listUsername.forEach(element => {
-            listUser.innerText += "\n-"+element.username;
+            listUser.innerText += "-"+element.username+"- "+element.color+"\n";
         });
+    }
+
+    function notName(data){
+        user = data;
     }
 
     btnEnter.addEventListener('click',setUsername,false);
@@ -158,6 +200,7 @@ const message = function() {
     socket.on('chat message', getMessage);
     socket.on('chat typing', getTyping);
     socket.on('new user',getListUser);
+    socket.on('not name',notName);
 }
 
 window.onunload = ()=>{

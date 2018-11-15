@@ -18,20 +18,22 @@ var random = 0;
 
 function onConnection(socket) {
     socket.on('drawing', (data) => socket.broadcast.emit('drawing', data));
-    socket.on('chat message', (data) => { io.sockets.emit('chat message', data), console.log(socket.id) });
+    socket.on('chat message', (data) => { io.sockets.emit('chat message', data)});
     socket.on('chat typing', (data) => { socket.broadcast.emit('chat typing', data) });
     socket.on('register user',(data)=>{
-        if(data==''){
+        
+        if(data.trim()==''){
             data = "Guest"+random;
-            random++;    
+            random++;
+            socket.emit('not name',data);    
         }
         listUsername.push({
             id:socket.id,
-            username:data
+            username:data,
+            color:"black"
         });
-
-        socket.emit('new user',listUsername);
-        socket.broadcast.emit('new user', listUsername);
+        console.log(data);
+        io.sockets.emit('new user',listUsername);   
     });
     socket.on('disconnected',(data)=>{
         let i;
@@ -43,6 +45,16 @@ function onConnection(socket) {
         })
         socket.broadcast.emit('new user', listUsername);
     });
+    socket.on('change color',(data)=>{
+        listUsername.forEach(element=>{
+            console.log(data);
+            if(element.id == socket.id){
+                element.color = data;
+            }
+        });
+        io.sockets.emit("new user",listUsername);
+    });
+
 }
 
 io.on('connection', onConnection);

@@ -1,30 +1,42 @@
 
 
 #canvas {
-  height: 400px;
-  width: 400px;
-  position: relative;
-* {
-  box-sizing: border-box;
+  position: absolute;
 }
 
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
+
 
 /**
  * Canvas
  */
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
 
-.whiteboard {
+.whiteboard{
   height: 100%;
   width: 100%;
+  position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   top: 0;
+  z-index: 0;
+}
+
+.size{
+  display: inline-block;
+  height: 2vw;
+  width: 2vw;
+  border-radius: 100%;
+}
+
+.eraser{
+  display: inline-block;
+  height: 3vw;
+  width: 3vw;
+  border-radius: 100%;
 }
 
 .colors {
@@ -33,9 +45,9 @@ html, body {
 
 .color {
   display: inline-block;
-  height: 48px;
-  width: 48px;
-  border-radius: 100px;
+  height: 2vw;
+  width: 2vw;
+  border-radius: 100%;
 }
 
 .color.black { background-color: black; }

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Socket.IO whiteboard</title>
+    <title>DrawBoard</title>
     <link rel="stylesheet" href="style.css">
     <link type="text/css" rel="stylesheet" href="materialize.min.css"  media="screen,projection"/>
 </head>
@@ -21,43 +21,57 @@
         <h7 style="bottom: 5px;text-align: center;position: absolute;width: 100%" class="white-text">DrawBoard - Create by luisedo97 and 13luismb</h7>        
     </div>
 
-    <div id="all" style="position:absolute;z-index: 1;height: 100%;width: 100%" hidden>
-        
-        
+
     
-        <div >
-            <canvas class="whiteboard black" id="canvas"></canvas>
+
+    <div id="all" class="row" hidden>
+        <div class="col s1 black" style="height:100vh;position:absolute;z-index: 1;">
+            <h3 class="white-text" style="font-size: 1vw;text-align: center;">DrawBoard</h3>
+            <br>
+            <h3 class="white-text" style="font-size: 1vw;text-align: center;">List Color:</h3>
+            <div class="color amber"></div>
+            <div class="color red"></div>
+            <div class="color blue"></div>
+            <div class="color yellow"></div>
+            <div class="color pink"></div>
+            <div class="color cyan"></div>
+            <div class="color purple"></div>
+            <div class="color green"></div>
+            <div class="color lime"></div>
+            <div class="color brown"></div>
+            <div class="color orange"></div>
+            <div class="color grey"></div>
+            <div class="color red"></div>
+            <div class="color teal"></div>
+            <div class="color indigo"></div>
+            <br>
+            <h3 class="white-text" style="font-size: 1vw;text-align: center;">List Size:</h3>
+            <div class="size white 2" style="height: 1vw;width: 1vw;"></div>
+            <div class="size white 5" style="height: 2vw;width: 2vw;"></div>
+            <div class="size white 7" style="height: 3vw;width: 3vw;"></div>
+            <h3 class="white-text" style="font-size: 1vw;text-align: center;">Eraser:</h3>
+            <div id="eraser" class="eraser white 30 center" style="height: 5vw;width: 5vw;"></div>
         </div>
         
-            <div id="chat-window" class="white" style="overflow: scroll;position: absolute;bottom:70px;z-index:2;height:25%;width: 30vh;right: 10px;">
-                    <div id="output"></div>
-                    <div id="actions"></div>
+        <div class="col s2 offset-s9 black" style="height:100vh;position:absolute;z-index: 1;right: 0;">
+            <h3 class="white-text" style="font-size: 1vw;text-align: center;">List Client:</h3>
+            <br>
+            <div class="black white-text" id="listUser" style="overflow: auto;height: 30%;width: 100%;">
             </div>
-            <div id="message-container" class="white" style="position: absolute;bottom:10px;z-index:2;height:10%;width: 30vh;right: 10px;">
-                <input type="text" id="message" placeholder="Message"> 
+            <br><br><br>
+            <h3 class="white-text" style="font-size: 1vw;text-align: center;">List Message:</h3>
+            <div id="chat-window" class="black white-text" style="overflow: auto;height:25%;width: 100%;">
+                <div id="output"></div>
+                <div id="actions"></div>
             </div>
-
-        <div class="white black-text" id="listUser" style="overflow: scroll;position:absolute;height: 30%;width: 30vh;bottom: 10px;left: 10px;z-index: 2;">
-            List User:
+            <div id="message-container" class="black white-text" style="width: 100%;">
+                <input type="text" id="message" placeholder="Message" class="white-text"> 
+            </div>
         </div>
-        
-
-        <div class="row colors black z-depth-3">
-            <div class="col s1 color white"></div>
-            <div class="col s1 color red"></div>
-            <div class="col s1 color blue"></div>
-            <div class="col s1 color yellow"></div>
-            <div class="col s1 color pink"></div>
-            <h3 class="col s2 white-text center">DrawBoard</h3>
-            <div class="col s1 color purple"></div>
-            <div class="col s1 color grey"></div>
-            <div class="col s1 color orange"></div>
-            <div class="col s1 color cyan"></div>
-            <div class="col s1 color lime"></div>
-        </div>
-
-
     </div>
+
+        <canvas id="canvas" class="white whiteboard">
+        </canvas>          
     
 
         <script src="/socket.io/socket.io.js"></script>
